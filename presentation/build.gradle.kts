@@ -1,7 +1,8 @@
 dependencies {
-    implementation(project(":domain"))
-    // En Android: implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:<versión>")
-    implementation(project(":lifecycle-stub"))
+    api(project(":domain"))
+    // ViewModel y viewModelScope de Android. La librería es multiplataforma,
+    // por eso este módulo sigue siendo Kotlin puro y se prueba sin emulador.
+    api("androidx.lifecycle:lifecycle-viewmodel:2.9.3")
 
     testImplementation(project(":data"))
     testImplementation(kotlin("test"))
