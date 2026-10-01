@@ -10,9 +10,12 @@
     <string name="field_confirm_password">Repite la contraseña</string>
     <string name="action_register">Crear cuenta</string>
     <string name="register_have_account">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="action_show_password">Ver contraseña</string>
+    <string name="action_hide_password">Ocultar contraseña</string>
 
     <!-- Login -->
     <string name="login_title">Bienvenido de vuelta</string>
+    <string name="login_subtitle">Tu próxima colaboración te está esperando.</string>
     <string name="action_login">Iniciar sesión</string>
     <string name="login_no_account">¿No tienes cuenta? Regístrate</string>
 
