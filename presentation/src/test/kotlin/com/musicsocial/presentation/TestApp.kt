@@ -58,11 +58,10 @@ class TestApp {
 
     /** Inicia sesión como un artista con perfil completo. */
     suspend fun signIn(id: String, roles: Set<ArtistRole> = setOf(ArtistRole.PRODUCER), genres: Set<Genre> = setOf(Genre.DRILL)) {
-        auth.signInAs(id, "$id@musica.com")
+        auth.signInAs(id)
         users.saveProfile(
             UserProfile(
                 id = id,
-                email = "$id@musica.com",
                 username = id,
                 artistName = id.replaceFirstChar { it.uppercase() },
                 roles = roles,

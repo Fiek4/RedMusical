@@ -2,10 +2,12 @@ package com.musicsocial.domain.model
 
 import java.time.Instant
 
-/** Perfil público del artista (su "blog"). */
+/**
+ * Perfil público del artista (su "blog"). No incluye el email:
+ * ese dato es privado y lo maneja [com.musicsocial.domain.repository.AuthRepository].
+ */
 data class UserProfile(
     val id: String,
-    val email: String,
     val username: String,
     val artistName: String,
     val photoUrl: String? = null,

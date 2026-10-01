@@ -17,6 +17,8 @@ import com.musicsocial.domain.repository.CollabCallRepository
 import com.musicsocial.domain.repository.IdGenerator
 import com.musicsocial.domain.repository.TrackRepository
 import com.musicsocial.domain.repository.UserRepository
+import com.musicsocial.domain.usecase.EmailAlreadyRegisteredException
+import com.musicsocial.domain.usecase.InvalidCredentialsException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -35,26 +37,34 @@ class UuidIdGenerator : IdGenerator {
 }
 
 class InMemoryAuthRepository(private val ids: IdGenerator = UuidIdGenerator()) : AuthRepository {
-    private val accounts = MutableStateFlow<Map<String, String>>(emptyMap()) // email -> userId
-    private var session: Pair<String, String>? = null // userId, email
+    private data class Account(val userId: String, val password: String)
+
+    private val accounts = MutableStateFlow<Map<String, Account>>(emptyMap()) // email -> cuenta
+    private var currentUserId: String? = null
 
     override suspend fun register(email: String, password: String): String {
+        if (email in accounts.value) throw EmailAlreadyRegisteredException()
         val userId = ids.newId()
-        accounts.update { it + (email to userId) }
-        session = userId to email
+        accounts.update { it + (email to Account(userId, password)) }
+        currentUserId = userId
         return userId
     }
 
-    override suspend fun isEmailRegistered(email: String) = email in accounts.value
+    override suspend fun signIn(email: String, password: String): String {
+        val account = accounts.value[email]?.takeIf { it.password == password } ?: throw InvalidCredentialsException()
+        currentUserId = account.userId
+        return account.userId
+    }
 
-    override fun currentUserId(): String? = session?.first
+    override suspend fun signOut() {
+        currentUserId = null
+    }
 
-    override fun currentUserEmail(): String? = session?.second
+    override fun currentUserId(): String? = currentUserId
 
     /** Útil en pruebas para simular que otro usuario inicia sesión. */
-    fun signInAs(userId: String, email: String) {
-        accounts.update { it + (email to userId) }
-        session = userId to email
+    fun signInAs(userId: String) {
+        currentUserId = userId
     }
 }
 

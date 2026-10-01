@@ -27,7 +27,6 @@ class EditProfileViewModelTest : ViewModelTest() {
         assertTrue(vm.uiState.value.saved)
         val saved = app.users.getProfile(userId)!!
         assertEquals("Fer Beats", saved.artistName)
-        assertEquals("fer@musica.com", saved.email)
     }
 
     @Test

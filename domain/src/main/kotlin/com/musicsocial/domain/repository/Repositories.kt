@@ -20,11 +20,19 @@ import java.time.Instant
  */
 
 interface AuthRepository {
-    /** Crea la cuenta y devuelve el id del usuario. */
+    /**
+     * Crea la cuenta, inicia sesión y devuelve el id del usuario.
+     * @throws com.musicsocial.domain.usecase.EmailAlreadyRegisteredException si el email ya existe.
+     */
     suspend fun register(email: String, password: String): String
-    suspend fun isEmailRegistered(email: String): Boolean
+
+    /**
+     * Inicia sesión y devuelve el id del usuario.
+     * @throws com.musicsocial.domain.usecase.InvalidCredentialsException si el email o la contraseña no coinciden.
+     */
+    suspend fun signIn(email: String, password: String): String
+    suspend fun signOut()
     fun currentUserId(): String?
-    fun currentUserEmail(): String?
 }
 
 interface UserRepository {
