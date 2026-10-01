@@ -1,5 +1,16 @@
 package com.musicsocial.app.ui.feed
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
+import com.musicsocial.app.ui.components.AppBackground
+import com.musicsocial.app.ui.components.GradientText
+import com.musicsocial.app.ui.theme.Brand
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,43 +59,49 @@ fun FeedScreen(
     val signedOut by viewModel.signedOut.collectAsStateWithLifecycle()
     LaunchedEffect(signedOut) { if (signedOut) onSignedOut() }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.feed_title)) },
-                actions = {
-                    TextButton(onClick = viewModel::onSignOut) { Text(stringResource(R.string.action_sign_out)) }
-                },
-            )
-        },
-    ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            item {
-                ChipGroup(ArtistRole.entries, state.filter.roles, viewModel::onRoleToggle) { it.label() }
-            }
-            item {
-                ChipGroup(Genre.entries, state.filter.genres, viewModel::onGenreToggle) { it.label() }
-            }
+    AppBackground {
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                    title = {
+                        GradientText(stringResource(R.string.feed_title), style = MaterialTheme.typography.headlineSmall)
+                    },
+                    actions = {
+                        TextButton(onClick = viewModel::onSignOut) { Text(stringResource(R.string.action_sign_out)) }
+                    },
+                )
+            },
+        ) { padding ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                item {
+                    ChipGroup(ArtistRole.entries, state.filter.roles, viewModel::onRoleToggle) { it.label() }
+                }
+                item {
+                    ChipGroup(Genre.entries, state.filter.genres, viewModel::onGenreToggle) { it.label() }
+                }
 
-            when {
-                state.isLoading -> item {
-                    Box(Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
+                when {
+                    state.isLoading -> item {
+                        Box(Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
                     }
-                }
-                state.calls.isEmpty() -> item {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                        Text(stringResource(R.string.feed_empty), modifier = Modifier.padding(top = 32.dp))
-                        TextButton(onClick = viewModel::onClearFilters) { Text(stringResource(R.string.feed_clear_filters)) }
+                    state.calls.isEmpty() -> item {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+                            Text(stringResource(R.string.feed_empty), modifier = Modifier.padding(top = 32.dp))
+                            TextButton(onClick = viewModel::onClearFilters) { Text(stringResource(R.string.feed_clear_filters)) }
+                        }
                     }
+                    else -> items(state.calls, key = { it.id }) { call -> CallCard(call) }
                 }
-                else -> items(state.calls, key = { it.id }) { call -> CallCard(call) }
             }
         }
     }
@@ -94,20 +111,49 @@ private val deadlineFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIU
 
 @Composable
 private fun CallCard(call: CollabCall) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(call.title, style = MaterialTheme.typography.titleMedium)
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+    ) {
+        // Franja con el degradado de marca arriba de cada tarjeta.
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(4.dp)
+                .background(Brand.gradient),
+        )
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Pill(call.lookingFor.label(), MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.onPrimaryContainer)
+                Pill(call.genre.label(), MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.colorScheme.onSecondaryContainer)
+            }
+            Text(call.title, style = MaterialTheme.typography.titleLarge)
             Text(
-                "${stringResource(R.string.feed_looking_for, call.lookingFor.label())} · ${call.genre.label()}",
+                call.description,
                 style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
-            Text(call.description, style = MaterialTheme.typography.bodySmall, maxLines = 2)
             Text(
                 "${call.dealType.label()} · " +
                     stringResource(R.string.feed_deadline, deadlineFormat.format(call.deadline.atZone(ZoneId.systemDefault()))),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.tertiary,
             )
         }
     }
+}
+
+@Composable
+private fun Pill(text: String, container: Color, content: Color) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelMedium,
+        color = content,
+        modifier = Modifier
+            .background(container, CircleShape)
+            .padding(horizontal = 10.dp, vertical = 4.dp),
+    )
 }

@@ -65,6 +65,8 @@ fun <T> PickerField(
             },
             trailingIcon = { Icon(painterResource(R.drawable.ic_arrow_drop_down), contentDescription = null) },
             singleLine = true,
+            shape = MaterialTheme.shapes.medium,
+            colors = appTextFieldColors(),
             modifier = Modifier.fillMaxWidth(),
         )
         // El TextField se come los toques; esta capa transparente abre la lista.
@@ -125,6 +127,8 @@ private fun <T> PickerDialog(
                     onValueChange = { query = it },
                     placeholder = { Text(stringResource(R.string.picker_search)) },
                     singleLine = true,
+                    shape = MaterialTheme.shapes.medium,
+                    colors = appTextFieldColors(),
                     modifier = Modifier.fillMaxWidth(),
                 )
                 LazyColumn(Modifier.heightIn(max = 360.dp)) {
