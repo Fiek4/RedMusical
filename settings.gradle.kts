@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+        google()
         gradlePluginPortal()
         mavenCentral()
     }
@@ -7,13 +8,14 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
+        google()
         mavenCentral()
     }
 }
 
 rootProject.name = "musicsocial"
+include(":app")
 include(":domain")
 include(":data")
-include(":presentation")
-include(":lifecycle-stub")
 include(":data-supabase")
+include(":presentation")

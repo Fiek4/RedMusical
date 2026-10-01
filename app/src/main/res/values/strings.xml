@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MusicSocial</string>
+
+    <!-- Registro -->
+    <string name="register_title">Crea tu cuenta</string>
+    <string name="register_subtitle">Encuentra con quién terminar tu próximo tema.</string>
+    <string name="field_email">Email</string>
+    <string name="field_password">Contraseña</string>
+    <string name="field_confirm_password">Repite la contraseña</string>
+    <string name="action_register">Crear cuenta</string>
+    <string name="register_success">¡Cuenta creada! Tu id es %1$s</string>
+
+    <!-- Errores de validación (ValidationError) -->
+    <string name="error_required">Este campo es obligatorio</string>
+    <string name="error_too_short">Mínimo %1$d caracteres</string>
+    <string name="error_too_long">Máximo %1$d caracteres</string>
+    <string name="error_invalid_format">El formato no es válido</string>
+    <string name="error_out_of_range">Debe estar entre %1$s y %2$s</string>
+    <string name="error_too_many">Máximo %1$d elementos</string>
+    <string name="error_password_weak">Usa letras y números</string>
+    <string name="error_passwords_do_not_match">Las contraseñas no coinciden</string>
+    <string name="error_already_taken">Ya está en uso</string>
+    <string name="error_file_too_large">El archivo pesa más de %1$d MB</string>
+    <string name="error_audio_too_long">El audio dura más de %1$d segundos</string>
+    <string name="error_empty_audio">El audio está vacío</string>
+    <string name="error_date_in_past">La fecha debe ser futura</string>
+    <string name="error_date_too_far">Máximo %1$d días desde hoy</string>
+    <string name="error_invalid_budget">El presupuesto no es válido</string>
+    <string name="error_plan_limit">Llegaste al límite de tu plan gratis (%1$d)</string>
+    <string name="error_own_call">No puedes postularte a tu propia convocatoria</string>
+    <string name="error_already_applied">Ya te postulaste a esta convocatoria</string>
+    <string name="error_call_closed">Esta convocatoria ya está cerrada</string>
+    <string name="error_not_participant">No eres parte de esta conversación</string>
+
+    <!-- Errores generales (UiError) -->
+    <string name="ui_error_generic">Algo salió mal. Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="ui_error_not_logged_in">Tu sesión expiró. Inicia sesión de nuevo.</string>
+    <string name="ui_error_not_found">No encontramos lo que buscas.</string>
+    <string name="ui_error_not_allowed">No tienes permiso para hacer esto.</string>
+</resources>

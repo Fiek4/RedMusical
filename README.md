@@ -1,11 +1,14 @@
 # MusicSocial · código Kotlin (MVVM)
 
-Capas listas: **modelo, validaciones, repositorios, casos de uso, ViewModels y conexión con Supabase**.
-Falta la UI (Jetpack Compose). Para configurar Supabase sigue [docs/supabase.md](docs/supabase.md).
+App Android en Kotlin con **MVVM**, **Jetpack Compose**, **Koin** y **Supabase**.
+Por ahora la app abre una pantalla de registro para probar la conexión; las demás pantallas vienen después.
 
 ## Módulos
 
 ```
+app/             App Android: Activity, pantallas Compose, Koin (di/AppModule.kt),
+                 lectura de audios del teléfono y textos en res/values/strings.xml
+
 domain/          Kotlin puro, el corazón de la app
 ├── model/       Entidades: UserProfile, Track, CollabCall, CollabApplication,
 │                Conversation/Message, Collaboration, Follow, enums
@@ -27,9 +30,6 @@ presentation/    ViewModels con StateFlow, uno por pantalla:
 ├── profile/     EditProfileViewModel (onboarding y editar perfil)
 ├── feed/        FeedViewModel (convocatorias con filtros)
 └── call/        CreateCallViewModel, ApplyViewModel, ReviewApplicationsViewModel
-
-lifecycle-stub/  Imitación de androidx.lifecycle.ViewModel SOLO para compilar fuera de
-                 Android. En Android Studio se borra y se usa la librería real.
 ```
 
 ## Cómo fluye una acción (MVVM)
@@ -57,13 +57,19 @@ incluido el flujo completo
 "Ana publica → Luis se postula → Ana acepta → se abre el chat".
 
 ```
-gradle test
+./gradlew test
 ```
 
-## Pasar a Android Studio
+## Abrir y ejecutar en Android Studio
 
-1. Crear proyecto Android (Empty Compose Activity) y copiar `domain/`, `data/`, `data-supabase/`
-   y `presentation/` (o mover `presentation/` dentro de `app/`). Usar Kotlin 2.4 o superior.
-2. Borrar `lifecycle-stub/` y en su lugar usar
-   `implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:<versión>")`.
-3. Configurar Supabase y la inyección de dependencias como explica [docs/supabase.md](docs/supabase.md).
+1. **File → New → Project from Version Control**, pega `https://github.com/Fiek4/RedMusical.git` y pulsa Clone.
+2. En la raíz del proyecto, abre (o crea) `local.properties` y agrega tus claves de Supabase:
+   ```properties
+   SUPABASE_URL=https://tkyjrpnfbqpmaabsgops.supabase.co
+   SUPABASE_KEY=sb_publishable_xxxxxxxx
+   ```
+   Android Studio ya escribe ahí `sdk.dir`; deja esa línea. Este archivo no se sube a GitHub.
+3. Espera a que termine el **Gradle Sync** y pulsa **Run ▶** con un emulador o tu teléfono.
+4. Crea una cuenta en la app. Si todo va bien, la verás en Supabase → Authentication → Users.
+
+Más detalles de Supabase en [docs/supabase.md](docs/supabase.md).

@@ -26,70 +26,14 @@ SUPABASE_URL=https://tkyjrpnfbqpmaabsgops.supabase.co
 SUPABASE_KEY=sb_publishable_xxxxxxxx
 ```
 
-En `app/build.gradle.kts`:
+`app/build.gradle.kts` las lee y las expone como `BuildConfig.SUPABASE_URL` y
+`BuildConfig.SUPABASE_KEY`. Si falta alguna, el build se detiene con un mensaje claro.
 
-```kotlin
-import java.util.Properties
+## 4. Dónde se conecta todo
 
-val localProps = Properties().apply {
-    rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
-}
-
-android {
-    buildFeatures { buildConfig = true }
-    defaultConfig {
-        buildConfigField("String", "SUPABASE_URL", "\"${localProps["SUPABASE_URL"]}\"")
-        buildConfigField("String", "SUPABASE_KEY", "\"${localProps["SUPABASE_KEY"]}\"")
-    }
-}
-
-dependencies {
-    implementation(project(":domain"))
-    implementation(project(":data-supabase"))
-    implementation(project(":presentation"))
-}
-```
-
-## 4. Leer audios del teléfono
-
-`SupabaseAudioUploader` necesita leer los bytes del archivo que el usuario eligió.
-En Android eso se hace con `ContentResolver`:
-
-```kotlin
-class AndroidAudioBytesReader(private val context: Context) : AudioBytesReader {
-    override suspend fun read(uri: String): ByteArray = withContext(Dispatchers.IO) {
-        context.contentResolver.openInputStream(Uri.parse(uri))!!.use { it.readBytes() }
-    }
-}
-```
-
-## 5. Armar las dependencias (ejemplo con Koin)
-
-```kotlin
-val appModule = module {
-    single { createMusicSocialClient(BuildConfig.SUPABASE_URL, BuildConfig.SUPABASE_KEY) }
-    single<Clock> { Clock.systemUTC() }
-    single<IdGenerator> { UuidIdGenerator() }
-
-    single<AuthRepository> { SupabaseAuthRepository(get()) }
-    single<UserRepository> { SupabaseUserRepository(get()) }
-    single<TrackRepository> { SupabaseTrackRepository(get()) }
-    single<CollabCallRepository> { SupabaseCollabCallRepository(get()) }
-    single<ApplicationRepository> { SupabaseApplicationRepository(get()) }
-    single<ChatRepository> { SupabaseChatRepository(get()) }
-    single<AudioUploader> { SupabaseAudioUploader(get(), get(), AndroidAudioBytesReader(androidContext())) }
-
-    factory { RegisterUseCase(get()) }
-    factory { SaveProfileUseCase(get(), get(), get()) }
-    factory { CreateCallUseCase(get(), get(), get(), get(), get(), get()) }
-    factory { ApplyToCallUseCase(get(), get(), get(), get(), get(), get()) }
-    factory { ReviewApplicationUseCase(get(), get(), get(), get(), get(), get()) }
-
-    viewModel { RegisterViewModel(get()) }
-    viewModel { FeedViewModel(get(), get(), get(), get()) }
-    // ...el resto de ViewModels igual
-}
-```
+- `app/.../di/AppModule.kt`: crea el cliente de Supabase y decide qué repositorios usar.
+  Para probar sin internet, cambia los `Supabase...Repository` por los `InMemory...` de `:data`.
+- `app/.../AndroidAudioBytesReader.kt`: lee los audios del teléfono para subirlos.
 
 ## Seguridad: qué protege la base
 
