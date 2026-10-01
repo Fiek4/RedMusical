@@ -1,12 +1,8 @@
 package com.musicsocial.app.ui.register
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -17,11 +13,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.musicsocial.app.R
 import com.musicsocial.app.ui.components.FormField
+import com.musicsocial.app.ui.components.FormScreen
+import com.musicsocial.app.ui.components.GradientText
 import com.musicsocial.app.ui.components.LoadingButton
+import com.musicsocial.app.ui.components.MusicLogo
 import com.musicsocial.app.ui.message
 import com.musicsocial.domain.validation.Field
 import com.musicsocial.presentation.auth.RegisterViewModel
@@ -46,43 +46,45 @@ fun RegisterScreen(
         }
     }
 
-    Scaffold(snackbarHost = { SnackbarHost(snackbar) }) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text(stringResource(R.string.register_title), style = MaterialTheme.typography.headlineMedium)
-            Text(stringResource(R.string.register_subtitle), style = MaterialTheme.typography.bodyMedium)
+    FormScreen(snackbar) {
+        MusicLogo(size = 120.dp)
+        GradientText(
+            stringResource(R.string.register_title),
+            style = MaterialTheme.typography.headlineMedium.copy(textAlign = TextAlign.Center),
+        )
+        Text(
+            stringResource(R.string.register_subtitle),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(8.dp))
 
-            FormField(
-                value = state.form.email,
-                onValueChange = viewModel::onEmailChange,
-                label = stringResource(R.string.field_email),
-                error = state.errors[Field.EMAIL],
-                keyboardType = KeyboardType.Email,
-            )
-            FormField(
-                value = state.form.password,
-                onValueChange = viewModel::onPasswordChange,
-                label = stringResource(R.string.field_password),
-                error = state.errors[Field.PASSWORD],
-                keyboardType = KeyboardType.Password,
-                isPassword = true,
-            )
-            FormField(
-                value = state.form.confirmPassword,
-                onValueChange = viewModel::onConfirmPasswordChange,
-                label = stringResource(R.string.field_confirm_password),
-                error = state.errors[Field.CONFIRM_PASSWORD],
-                keyboardType = KeyboardType.Password,
-                isPassword = true,
-            )
+        FormField(
+            value = state.form.email,
+            onValueChange = viewModel::onEmailChange,
+            label = stringResource(R.string.field_email),
+            error = state.errors[Field.EMAIL],
+            keyboardType = KeyboardType.Email,
+        )
+        FormField(
+            value = state.form.password,
+            onValueChange = viewModel::onPasswordChange,
+            label = stringResource(R.string.field_password),
+            error = state.errors[Field.PASSWORD],
+            keyboardType = KeyboardType.Password,
+            isPassword = true,
+        )
+        FormField(
+            value = state.form.confirmPassword,
+            onValueChange = viewModel::onConfirmPasswordChange,
+            label = stringResource(R.string.field_confirm_password),
+            error = state.errors[Field.CONFIRM_PASSWORD],
+            keyboardType = KeyboardType.Password,
+            isPassword = true,
+        )
 
-            LoadingButton(stringResource(R.string.action_register), state.isLoading, viewModel::onSubmit)
-            TextButton(onClick = onGoToLogin) { Text(stringResource(R.string.register_have_account)) }
-        }
+        LoadingButton(stringResource(R.string.action_register), state.isLoading, viewModel::onSubmit)
+        TextButton(onClick = onGoToLogin) { Text(stringResource(R.string.register_have_account)) }
     }
 }
