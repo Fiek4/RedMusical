@@ -9,18 +9,30 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.musicsocial.app.R
 import com.musicsocial.app.ui.message
 import com.musicsocial.domain.validation.ValidationError
 
-/** Campo de texto con el error de validación debajo. */
+/**
+ * Campo de texto con el error de validación debajo.
+ * Si es contraseña, muestra un ojo para verla u ocultarla.
+ */
 @Composable
 fun FormField(
     value: String,
@@ -31,6 +43,8 @@ fun FormField(
     isPassword: Boolean = false,
     singleLine: Boolean = true,
 ) {
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -44,7 +58,27 @@ fun FormField(
         singleLine = singleLine,
         minLines = if (singleLine) 1 else 3,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+        visualTransformation = if (isPassword && !passwordVisible) {
+            PasswordVisualTransformation()
+        } else {
+            VisualTransformation.None
+        },
+        trailingIcon = if (isPassword) {
+            {
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        painter = painterResource(
+                            if (passwordVisible) R.drawable.ic_visibility_off else R.drawable.ic_visibility,
+                        ),
+                        contentDescription = stringResource(
+                            if (passwordVisible) R.string.action_hide_password else R.string.action_show_password,
+                        ),
+                    )
+                }
+            }
+        } else {
+            null
+        },
         modifier = Modifier.fillMaxWidth(),
     )
 }
