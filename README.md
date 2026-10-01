@@ -1,7 +1,7 @@
 # MusicSocial · código Kotlin (MVVM)
 
-Capas listas: **modelo, validaciones, repositorios, casos de uso y ViewModels**.
-Falta la UI (Jetpack Compose) y el backend real.
+Capas listas: **modelo, validaciones, repositorios, casos de uso, ViewModels y conexión con Supabase**.
+Falta la UI (Jetpack Compose). Para configurar Supabase sigue [docs/supabase.md](docs/supabase.md).
 
 ## Módulos
 
@@ -14,8 +14,13 @@ domain/          Kotlin puro, el corazón de la app
 ├── repository/  Interfaces de datos (Auth, User, Track, CollabCall, Application, Chat, AudioUploader)
 └── usecase/     Register, SaveProfile, CreateCall, ApplyToCall, ReviewApplication
 
-data/            Implementaciones en memoria de los repositorios (para desarrollar y probar
-                 sin backend). Luego se agregan las de Supabase/Firebase.
+data/            Implementaciones en memoria de los repositorios (para pruebas y desarrollo
+                 sin conexión).
+
+data-supabase/   Implementaciones reales con Supabase (auth, base de datos y audios),
+                 DTOs y conversión a modelos del dominio.
+
+supabase/        Script SQL: tablas, reglas de seguridad (RLS), triggers y bucket de audio.
 
 presentation/    ViewModels con StateFlow, uno por pantalla:
 ├── auth/        RegisterViewModel
@@ -47,7 +52,8 @@ UI (Compose) ──onPublish()──▶ ViewModel ──▶ CreateCallUseCase �
 
 ## Pruebas
 
-33 pruebas: validaciones (20) y ViewModels (13), incluido el flujo completo
+37 pruebas: validaciones (20), ViewModels (13) y conversión de datos de Supabase (4),
+incluido el flujo completo
 "Ana publica → Luis se postula → Ana acepta → se abre el chat".
 
 ```
@@ -56,9 +62,8 @@ gradle test
 
 ## Pasar a Android Studio
 
-1. Crear proyecto Android (Empty Compose Activity) y copiar `domain/`, `data/` y `presentation/`
-   (o mover `presentation/` dentro de `app/`).
+1. Crear proyecto Android (Empty Compose Activity) y copiar `domain/`, `data/`, `data-supabase/`
+   y `presentation/` (o mover `presentation/` dentro de `app/`). Usar Kotlin 2.4 o superior.
 2. Borrar `lifecycle-stub/` y en su lugar usar
    `implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:<versión>")`.
-3. Crear los ViewModels con Hilt o Koin (inyección de dependencias), conectando
-   las implementaciones en memoria por ahora.
+3. Configurar Supabase y la inyección de dependencias como explica [docs/supabase.md](docs/supabase.md).

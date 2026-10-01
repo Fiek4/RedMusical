@@ -17,13 +17,11 @@ class RegisterUseCase(private val auth: AuthRepository) {
         val validation = UserValidator.validateRegister(form)
         if (!validation.isValid) return@runCatchingUseCase UseCaseResult.Invalid(validation)
 
-        val email = form.email.trim().lowercase()
-        if (auth.isEmailRegistered(email)) {
-            return@runCatchingUseCase UseCaseResult.Invalid(
-                ValidationResult(mapOf(Field.EMAIL to ValidationError.AlreadyTaken)),
-            )
+        try {
+            UseCaseResult.Success(auth.register(form.email.trim().lowercase(), form.password))
+        } catch (e: EmailAlreadyRegisteredException) {
+            UseCaseResult.Invalid(ValidationResult(mapOf(Field.EMAIL to ValidationError.AlreadyTaken)))
         }
-        UseCaseResult.Success(auth.register(email, form.password))
     }
 }
 
@@ -48,7 +46,6 @@ class SaveProfileUseCase(
 
         val base = users.getProfile(userId) ?: UserProfile(
             id = userId,
-            email = auth.currentUserEmail() ?: throw NotLoggedInException(),
             username = "",
             artistName = "",
             roles = emptySet(),
