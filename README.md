@@ -1,12 +1,12 @@
 # MusicSocial · código Kotlin (MVVM)
 
 App Android en Kotlin con **MVVM**, **Jetpack Compose**, **Koin** y **Supabase**.
-Por ahora la app abre una pantalla de registro para probar la conexión; las demás pantallas vienen después.
+Pantallas listas: inicio de sesión, registro, perfil de artista (onboarding) y feed de convocatorias con filtros.
 
 ## Módulos
 
 ```
-app/             App Android: Activity, pantallas Compose, Koin (di/AppModule.kt),
+app/             App Android: navegación (navigation/AppNavHost.kt), pantallas Compose (ui/), Koin (di/AppModule.kt),
                  lectura de audios del teléfono y textos en res/values/strings.xml
 
 domain/          Kotlin puro, el corazón de la app
@@ -52,7 +52,7 @@ UI (Compose) ──onPublish()──▶ ViewModel ──▶ CreateCallUseCase �
 
 ## Pruebas
 
-37 pruebas: validaciones (20), ViewModels (13) y conversión de datos de Supabase (4),
+43 pruebas: validaciones (20), ViewModels (19) y conversión de datos de Supabase (4),
 incluido el flujo completo
 "Ana publica → Luis se postula → Ana acepta → se abre el chat".
 

@@ -88,6 +88,11 @@ class SupabaseAuthRepository(private val client: SupabaseClient) : AuthRepositor
     override suspend fun signOut() = client.auth.signOut()
 
     override fun currentUserId(): String? = client.auth.currentUserOrNull()?.id
+
+    override suspend fun restoreSession(): String? {
+        client.auth.awaitInitialization()
+        return currentUserId()
+    }
 }
 
 class SupabaseUserRepository(private val client: SupabaseClient) : UserRepository {

@@ -33,6 +33,9 @@ interface AuthRepository {
     suspend fun signIn(email: String, password: String): String
     suspend fun signOut()
     fun currentUserId(): String?
+
+    /** Espera a que se cargue la sesión guardada en el teléfono y devuelve el usuario, si hay. */
+    suspend fun restoreSession(): String?
 }
 
 interface UserRepository {

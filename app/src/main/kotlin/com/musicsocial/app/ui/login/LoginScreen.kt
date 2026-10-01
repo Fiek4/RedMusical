@@ -1,4 +1,4 @@
-package com.musicsocial.app.ui.register
+package com.musicsocial.app.ui.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,21 +24,20 @@ import com.musicsocial.app.ui.components.FormField
 import com.musicsocial.app.ui.components.LoadingButton
 import com.musicsocial.app.ui.message
 import com.musicsocial.domain.validation.Field
-import com.musicsocial.presentation.auth.RegisterViewModel
+import com.musicsocial.presentation.auth.LoginViewModel
 import org.koin.androidx.compose.koinViewModel
 
-/** La UI solo dibuja el estado del ViewModel y le avisa los eventos. */
 @Composable
-fun RegisterScreen(
-    onRegistered: () -> Unit,
-    onGoToLogin: () -> Unit,
-    viewModel: RegisterViewModel = koinViewModel(),
+fun LoginScreen(
+    onSignedIn: () -> Unit,
+    onGoToRegister: () -> Unit,
+    viewModel: LoginViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
     val errorText = state.error?.message()
 
-    LaunchedEffect(state.registeredUserId) { if (state.registeredUserId != null) onRegistered() }
+    LaunchedEffect(state.signedIn) { if (state.signedIn) onSignedIn() }
     LaunchedEffect(errorText) {
         if (errorText != null) {
             snackbar.showSnackbar(errorText)
@@ -54,8 +53,7 @@ fun RegisterScreen(
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text(stringResource(R.string.register_title), style = MaterialTheme.typography.headlineMedium)
-            Text(stringResource(R.string.register_subtitle), style = MaterialTheme.typography.bodyMedium)
+            Text(stringResource(R.string.login_title), style = MaterialTheme.typography.headlineMedium)
 
             FormField(
                 value = state.form.email,
@@ -72,17 +70,12 @@ fun RegisterScreen(
                 keyboardType = KeyboardType.Password,
                 isPassword = true,
             )
-            FormField(
-                value = state.form.confirmPassword,
-                onValueChange = viewModel::onConfirmPasswordChange,
-                label = stringResource(R.string.field_confirm_password),
-                error = state.errors[Field.CONFIRM_PASSWORD],
-                keyboardType = KeyboardType.Password,
-                isPassword = true,
-            )
+            state.errors[Field.GENERAL]?.let {
+                Text(it.message(), color = MaterialTheme.colorScheme.error)
+            }
 
-            LoadingButton(stringResource(R.string.action_register), state.isLoading, viewModel::onSubmit)
-            TextButton(onClick = onGoToLogin) { Text(stringResource(R.string.register_have_account)) }
+            LoadingButton(stringResource(R.string.action_login), state.isLoading, viewModel::onSubmit)
+            TextButton(onClick = onGoToRegister) { Text(stringResource(R.string.login_no_account)) }
         }
     }
 }
