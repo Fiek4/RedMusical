@@ -52,7 +52,7 @@ UI (Compose) ──onPublish()──▶ ViewModel ──▶ CreateCallUseCase �
 
 ## Pruebas
 
-43 pruebas: validaciones (20), ViewModels (19) y conversión de datos de Supabase (4),
+50 pruebas: validaciones (20), ViewModels (22), conversión de datos de Supabase (4) y catálogo de ubicaciones (4),
 incluido el flujo completo
 "Ana publica → Luis se postula → Ana acepta → se abre el chat".
 
@@ -73,3 +73,11 @@ incluido el flujo completo
 4. Crea una cuenta en la app. Si todo va bien, la verás en Supabase → Authentication → Users.
 
 Más detalles de Supabase en [docs/supabase.md](docs/supabase.md).
+
+## Datos de ubicación
+
+La lista de países, regiones y ciudades del perfil está en `app/src/main/assets/locations.txt`
+(países de habla hispana y Estados Unidos, hasta 150 ciudades por región). Sale de
+[countries-states-cities-database](https://github.com/dr5hn/countries-states-cities-database),
+con licencia [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/), que pide dar crédito.
+Para regenerarla o agregar países, usa `tools/locations/generate.py`.

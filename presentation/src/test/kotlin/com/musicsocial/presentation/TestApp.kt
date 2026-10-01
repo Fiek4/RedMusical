@@ -1,5 +1,6 @@
 package com.musicsocial.presentation
 
+import com.musicsocial.data.location.TextLocationCatalog
 import com.musicsocial.data.memory.FakeAudioUploader
 import com.musicsocial.data.memory.InMemoryApplicationRepository
 import com.musicsocial.data.memory.InMemoryAuthRepository
@@ -41,6 +42,20 @@ fun validCallForm() = CollabCallForm(
     dealType = DealType.FREE_COLLAB,
 )
 
+val TEST_LOCATIONS = """
+    #CL|Chile
+    @Región Metropolitana de Santiago
+    Puente Alto
+    Santiago
+    @Valparaíso
+    Valparaíso
+    Viña del Mar
+    #PE|Perú
+    @Lima
+    Lima
+    Miraflores
+""".trimIndent()
+
 /** Arma toda la app con repositorios en memoria y un reloj fijo. */
 class TestApp {
     val clock: Clock = Clock.fixed(NOW, ZoneOffset.UTC)
@@ -51,6 +66,7 @@ class TestApp {
     val applications = InMemoryApplicationRepository()
     val chats = InMemoryChatRepository()
     val uploader = FakeAudioUploader()
+    val locations = TextLocationCatalog { TEST_LOCATIONS }
 
     val register = RegisterUseCase(auth)
     val signIn = SignInUseCase(auth)
