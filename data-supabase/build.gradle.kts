@@ -5,7 +5,10 @@ plugins {
 dependencies {
     implementation(project(":domain"))
 
-    implementation(platform("io.github.jan-tennert.supabase:bom:3.8.0"))
+    // `api`: la app usa el tipo SupabaseClient (lo crea en di/AppModule.kt),
+    // así que este módulo debe exponerlo a quien lo use.
+    api(platform("io.github.jan-tennert.supabase:bom:3.8.0"))
+    api("io.github.jan-tennert.supabase:supabase-kt")
     implementation("io.github.jan-tennert.supabase:auth-kt")
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("io.github.jan-tennert.supabase:storage-kt")
