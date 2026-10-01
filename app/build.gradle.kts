@@ -4,6 +4,8 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("plugin.compose")
+    // Para las rutas de navegación con tipos (@Serializable).
+    kotlin("plugin.serialization")
 }
 
 // Claves de Supabase desde local.properties (ese archivo NO se sube a GitHub).
@@ -61,6 +63,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.10.1")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.3")
+    implementation("androidx.navigation:navigation-compose:2.9.3")
 
     implementation(platform("androidx.compose:compose-bom:2025.09.00"))
     implementation("androidx.compose.ui:ui")

@@ -62,6 +62,8 @@ class InMemoryAuthRepository(private val ids: IdGenerator = UuidIdGenerator()) :
 
     override fun currentUserId(): String? = currentUserId
 
+    override suspend fun restoreSession(): String? = currentUserId
+
     /** Útil en pruebas para simular que otro usuario inicia sesión. */
     fun signInAs(userId: String) {
         currentUserId = userId

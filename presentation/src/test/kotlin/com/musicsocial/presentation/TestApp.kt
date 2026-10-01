@@ -16,7 +16,9 @@ import com.musicsocial.domain.model.Genre
 import com.musicsocial.domain.model.UserProfile
 import com.musicsocial.domain.usecase.ApplyToCallUseCase
 import com.musicsocial.domain.usecase.CreateCallUseCase
+import com.musicsocial.domain.usecase.GetStartDestinationUseCase
 import com.musicsocial.domain.usecase.RegisterUseCase
+import com.musicsocial.domain.usecase.SignInUseCase
 import com.musicsocial.domain.usecase.ReviewApplicationUseCase
 import com.musicsocial.domain.usecase.SaveProfileUseCase
 import java.time.Clock
@@ -51,6 +53,8 @@ class TestApp {
     val uploader = FakeAudioUploader()
 
     val register = RegisterUseCase(auth)
+    val signIn = SignInUseCase(auth)
+    val getStartDestination = GetStartDestinationUseCase(auth, users)
     val saveProfile = SaveProfileUseCase(auth, users, clock)
     val createCall = CreateCallUseCase(auth, users, calls, uploader, ids, clock)
     val applyToCall = ApplyToCallUseCase(auth, calls, applications, uploader, ids, clock)

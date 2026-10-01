@@ -15,6 +15,8 @@ sealed interface ValidationError {
     data object PasswordsDoNotMatch : ValidationError
     /** Email o nombre de usuario ya usado por otra cuenta. */
     data object AlreadyTaken : ValidationError
+    /** Email o contraseña incorrectos al iniciar sesión. */
+    data object InvalidCredentials : ValidationError
 
     // Audio
     data class FileTooLarge(val maxBytes: Long) : ValidationError

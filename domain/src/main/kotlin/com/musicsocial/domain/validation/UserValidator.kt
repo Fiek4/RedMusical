@@ -1,5 +1,6 @@
 package com.musicsocial.domain.validation
 
+import com.musicsocial.domain.form.LoginForm
 import com.musicsocial.domain.form.ProfileForm
 import com.musicsocial.domain.form.RegisterForm
 
@@ -13,6 +14,12 @@ object UserValidator {
             { Rules.required(form.confirmPassword) },
             { if (form.confirmPassword != form.password) ValidationError.PasswordsDoNotMatch else null },
         )
+    }
+
+    /** Al iniciar sesión solo revisamos que no esté vacío; la contraseña la valida el servidor. */
+    fun validateLogin(form: LoginForm): ValidationResult = validate {
+        check(Field.EMAIL, { Rules.required(form.email) }, { Rules.email(form.email) })
+        check(Field.PASSWORD, Rules.required(form.password))
     }
 
     fun validateProfile(form: ProfileForm): ValidationResult = validate {

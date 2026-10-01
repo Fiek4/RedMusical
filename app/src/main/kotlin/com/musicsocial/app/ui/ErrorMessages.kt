@@ -18,6 +18,7 @@ fun ValidationError.message(): String = when (this) {
     ValidationError.PasswordTooWeak -> stringResource(R.string.error_password_weak)
     ValidationError.PasswordsDoNotMatch -> stringResource(R.string.error_passwords_do_not_match)
     ValidationError.AlreadyTaken -> stringResource(R.string.error_already_taken)
+    ValidationError.InvalidCredentials -> stringResource(R.string.error_invalid_credentials)
     is ValidationError.FileTooLarge -> stringResource(R.string.error_file_too_large, (maxBytes / (1024 * 1024)).toInt())
     is ValidationError.AudioTooLong -> stringResource(R.string.error_audio_too_long, maxSeconds)
     ValidationError.EmptyAudio -> stringResource(R.string.error_empty_audio)

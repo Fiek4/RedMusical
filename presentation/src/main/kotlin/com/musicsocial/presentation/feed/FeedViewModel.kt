@@ -62,4 +62,16 @@ class FeedViewModel(
     fun onClearFilters() {
         filter.value = CallFilter()
     }
+
+    private val _signedOut = MutableStateFlow(false)
+
+    /** true después de cerrar sesión; la UI vuelve al login. */
+    val signedOut: StateFlow<Boolean> = _signedOut
+
+    fun onSignOut() {
+        viewModelScope.launch {
+            runCatching { auth.signOut() }
+            _signedOut.value = true
+        }
+    }
 }

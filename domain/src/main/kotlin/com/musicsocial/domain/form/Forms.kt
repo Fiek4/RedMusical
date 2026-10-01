@@ -19,6 +19,11 @@ data class RegisterForm(
     val confirmPassword: String = "",
 )
 
+data class LoginForm(
+    val email: String = "",
+    val password: String = "",
+)
+
 data class ProfileForm(
     val username: String = "",
     val artistName: String = "",

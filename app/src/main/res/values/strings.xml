@@ -9,7 +9,56 @@
     <string name="field_password">Contraseña</string>
     <string name="field_confirm_password">Repite la contraseña</string>
     <string name="action_register">Crear cuenta</string>
-    <string name="register_success">¡Cuenta creada! Tu id es %1$s</string>
+    <string name="register_have_account">¿Ya tienes cuenta? Inicia sesión</string>
+
+    <!-- Login -->
+    <string name="login_title">Bienvenido de vuelta</string>
+    <string name="action_login">Iniciar sesión</string>
+    <string name="login_no_account">¿No tienes cuenta? Regístrate</string>
+
+    <!-- Perfil / onboarding -->
+    <string name="profile_title_new">Crea tu perfil de artista</string>
+    <string name="profile_title_edit">Editar perfil</string>
+    <string name="field_username">Nombre de usuario (@)</string>
+    <string name="field_artist_name">Nombre artístico</string>
+    <string name="field_bio">Bio</string>
+    <string name="field_city">Ciudad</string>
+    <string name="profile_roles">¿Qué haces?</string>
+    <string name="profile_genres">Tus géneros</string>
+    <string name="action_save">Guardar</string>
+
+    <!-- Feed -->
+    <string name="feed_title">Convocatorias</string>
+    <string name="feed_empty">No hay convocatorias con estos filtros todavía.</string>
+    <string name="feed_clear_filters">Quitar filtros</string>
+    <string name="feed_looking_for">Busca: %1$s</string>
+    <string name="feed_deadline">Hasta el %1$s</string>
+    <string name="action_sign_out">Salir</string>
+
+    <!-- Roles -->
+    <string name="role_producer">Productor</string>
+    <string name="role_singer">Cantante</string>
+    <string name="role_rapper">Rapero</string>
+    <string name="role_instrumentalist">Instrumentista</string>
+    <string name="role_mix_engineer">Ingeniero de mezcla</string>
+    <string name="role_songwriter">Compositor</string>
+
+    <!-- Géneros -->
+    <string name="genre_trap">Trap</string>
+    <string name="genre_reggaeton">Reggaetón</string>
+    <string name="genre_hip_hop">Hip hop</string>
+    <string name="genre_drill">Drill</string>
+    <string name="genre_rnb">R&amp;B</string>
+    <string name="genre_pop">Pop</string>
+    <string name="genre_rock">Rock</string>
+    <string name="genre_electronic">Electrónica</string>
+    <string name="genre_latin">Latino</string>
+    <string name="genre_other">Otro</string>
+
+    <!-- Tipo de acuerdo -->
+    <string name="deal_free_collab">Colaboración libre</string>
+    <string name="deal_paid">Pagado</string>
+    <string name="deal_exchange">Intercambio</string>
 
     <!-- Errores de validación (ValidationError) -->
     <string name="error_required">Este campo es obligatorio</string>
@@ -32,6 +81,7 @@
     <string name="error_already_applied">Ya te postulaste a esta convocatoria</string>
     <string name="error_call_closed">Esta convocatoria ya está cerrada</string>
     <string name="error_not_participant">No eres parte de esta conversación</string>
+    <string name="error_invalid_credentials">Email o contraseña incorrectos</string>
 
     <!-- Errores generales (UiError) -->
     <string name="ui_error_generic">Algo salió mal. Revisa tu conexión e inténtalo de nuevo.</string>
