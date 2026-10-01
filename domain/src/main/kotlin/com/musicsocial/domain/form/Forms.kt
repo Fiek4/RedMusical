@@ -30,6 +30,8 @@ data class ProfileForm(
     val bio: String = "",
     val roles: Set<ArtistRole> = emptySet(),
     val genres: Set<Genre> = emptySet(),
+    /** Código ISO del país (CL, MX...), vacío si no eligió. */
+    val country: String = "",
     val city: String = "",
     val links: List<ExternalLink> = emptyList(),
 )

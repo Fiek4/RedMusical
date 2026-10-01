@@ -2,6 +2,7 @@ package com.musicsocial.app.di
 
 import com.musicsocial.app.AndroidAudioBytesReader
 import com.musicsocial.app.BuildConfig
+import com.musicsocial.data.location.TextLocationCatalog
 import com.musicsocial.data.memory.UuidIdGenerator
 import com.musicsocial.data.supabase.SupabaseApplicationRepository
 import com.musicsocial.data.supabase.SupabaseAudioUploader
@@ -17,6 +18,7 @@ import com.musicsocial.domain.repository.AuthRepository
 import com.musicsocial.domain.repository.ChatRepository
 import com.musicsocial.domain.repository.CollabCallRepository
 import com.musicsocial.domain.repository.IdGenerator
+import com.musicsocial.domain.repository.LocationCatalog
 import com.musicsocial.domain.repository.TrackRepository
 import com.musicsocial.domain.repository.UserRepository
 import com.musicsocial.domain.usecase.ApplyToCallUseCase
@@ -34,6 +36,8 @@ import com.musicsocial.presentation.call.ReviewApplicationsViewModel
 import com.musicsocial.presentation.feed.FeedViewModel
 import com.musicsocial.presentation.profile.EditProfileViewModel
 import com.musicsocial.presentation.session.StartViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -55,6 +59,12 @@ val appModule = module {
     single<CollabCallRepository> { SupabaseCollabCallRepository(get()) }
     single<ApplicationRepository> { SupabaseApplicationRepository(get()) }
     single<ChatRepository> { SupabaseChatRepository(get()) }
+    single<LocationCatalog> {
+        val assets = androidContext().assets
+        TextLocationCatalog {
+            withContext(Dispatchers.IO) { assets.open("locations.txt").bufferedReader().use { it.readText() } }
+        }
+    }
     single<AudioUploader> { SupabaseAudioUploader(get(), get(), AndroidAudioBytesReader(androidContext())) }
 
     // Casos de uso
@@ -70,7 +80,7 @@ val appModule = module {
     viewModel { StartViewModel(get()) }
     viewModel { LoginViewModel(get()) }
     viewModel { RegisterViewModel(get()) }
-    viewModel { EditProfileViewModel(get(), get(), get()) }
+    viewModel { EditProfileViewModel(get(), get(), get(), get()) }
     viewModel { FeedViewModel(get(), get(), get(), get()) }
     viewModel { CreateCallViewModel(get(), get()) }
     viewModel { params -> ApplyViewModel(params.get(), get(), get()) }

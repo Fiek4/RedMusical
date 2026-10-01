@@ -25,10 +25,18 @@
     <string name="field_username">Nombre de usuario (@)</string>
     <string name="field_artist_name">Nombre artístico</string>
     <string name="field_bio">Bio</string>
+    <string name="field_country">País</string>
+    <string name="field_region">Región / provincia / estado</string>
     <string name="field_city">Ciudad</string>
+    <string name="hint_choose_country_first">Elige primero el país</string>
+    <string name="hint_choose_region_first">Elige primero la región</string>
+    <string name="picker_search">Buscar…</string>
+    <string name="picker_empty">Sin resultados</string>
+    <string name="picker_use_custom">Usar «%1$s»</string>
     <string name="profile_roles">¿Qué haces?</string>
     <string name="profile_genres">Tus géneros</string>
     <string name="action_save">Guardar</string>
+    <string name="action_cancel">Cancelar</string>
 
     <!-- Feed -->
     <string name="feed_title">Convocatorias</string>

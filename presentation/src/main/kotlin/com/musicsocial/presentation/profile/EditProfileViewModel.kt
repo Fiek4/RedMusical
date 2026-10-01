@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.musicsocial.domain.form.ProfileForm
 import com.musicsocial.domain.model.ArtistRole
+import com.musicsocial.domain.model.Country
 import com.musicsocial.domain.model.ExternalLink
 import com.musicsocial.domain.model.Genre
 import com.musicsocial.domain.repository.AuthRepository
+import com.musicsocial.domain.repository.LocationCatalog
 import com.musicsocial.domain.repository.UserRepository
 import com.musicsocial.domain.usecase.SaveProfileUseCase
 import com.musicsocial.domain.usecase.UseCaseResult
@@ -31,13 +33,22 @@ data class EditProfileUiState(
     val isNewProfile: Boolean = false,
     val error: UiError? = null,
     val saved: Boolean = false,
-)
+    /** Opciones de los selectores de ubicación: cada lista depende de lo elegido antes. */
+    val countries: List<Country> = emptyList(),
+    val regions: List<String> = emptyList(),
+    val cities: List<String> = emptyList(),
+    /** La región no se guarda: solo sirve para filtrar las ciudades. */
+    val region: String = "",
+) {
+    val countryName: String get() = countries.firstOrNull { it.code == form.country }?.name.orEmpty()
+}
 
 /** Sirve para el onboarding (perfil nuevo) y para editar el perfil después. */
 class EditProfileViewModel(
     private val auth: AuthRepository,
     private val users: UserRepository,
     private val saveProfile: SaveProfileUseCase,
+    private val locations: LocationCatalog,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EditProfileUiState())
@@ -48,11 +59,22 @@ class EditProfileViewModel(
     init {
         viewModelScope.launch {
             val profile = auth.currentUserId()?.let { users.getProfile(it) }
+            val form = profile?.toForm() ?: ProfileForm()
+            val country = form.country
+            val region = if (country.isNotEmpty() && form.city.isNotEmpty()) {
+                locations.regionOf(country, form.city).orEmpty()
+            } else {
+                ""
+            }
             _uiState.update {
                 it.copy(
-                    form = profile?.toForm() ?: ProfileForm(),
+                    form = form,
                     isNewProfile = profile == null,
                     isLoading = false,
+                    countries = locations.countries(),
+                    regions = if (country.isNotEmpty()) locations.regions(country) else emptyList(),
+                    region = region,
+                    cities = if (region.isNotEmpty()) locations.cities(country, region) else emptyList(),
                 )
             }
         }
@@ -62,6 +84,32 @@ class EditProfileViewModel(
     fun onArtistNameChange(value: String) = updateForm { it.copy(artistName = value) }
     fun onBioChange(value: String) = updateForm { it.copy(bio = value) }
     fun onCityChange(value: String) = updateForm { it.copy(city = value) }
+
+    /** Al cambiar de país se borran la región y la ciudad, y se cargan las regiones del nuevo. */
+    fun onCountrySelected(code: String) {
+        if (code == _uiState.value.form.country) return
+        updateForm { it.copy(country = code, city = "") }
+        _uiState.update { it.copy(region = "", regions = emptyList(), cities = emptyList()) }
+        viewModelScope.launch {
+            val regions = locations.regions(code)
+            _uiState.update { if (it.form.country == code) it.copy(regions = regions) else it }
+        }
+    }
+
+    /** Al cambiar de región se borra la ciudad y se cargan las ciudades de esa región. */
+    fun onRegionSelected(region: String) {
+        val state = _uiState.value
+        if (region == state.region) return
+        val country = state.form.country
+        updateForm { it.copy(city = "") }
+        _uiState.update { it.copy(region = region, cities = emptyList()) }
+        viewModelScope.launch {
+            val cities = locations.cities(country, region)
+            _uiState.update {
+                if (it.form.country == country && it.region == region) it.copy(cities = cities) else it
+            }
+        }
+    }
     fun onRoleToggle(role: ArtistRole) = updateForm { it.copy(roles = it.roles.toggle(role)) }
     fun onGenreToggle(genre: Genre) = updateForm { it.copy(genres = it.genres.toggle(genre)) }
     fun onAddLink(link: ExternalLink) = updateForm { it.copy(links = it.links + link) }

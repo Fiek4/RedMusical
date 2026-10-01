@@ -42,6 +42,7 @@ internal fun ProfileForm.applyTo(profile: UserProfile) = profile.copy(
     bio = bio.trim(),
     roles = roles,
     genres = genres,
+    country = country.trim().ifBlank { null },
     city = city.trim().ifBlank { null },
     links = links,
 )
@@ -52,6 +53,7 @@ fun UserProfile.toForm() = ProfileForm(
     bio = bio,
     roles = roles,
     genres = genres,
+    country = country.orEmpty(),
     city = city.orEmpty(),
     links = links,
 )

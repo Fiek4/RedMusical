@@ -26,6 +26,7 @@ import com.musicsocial.app.R
 import com.musicsocial.app.ui.components.ChipGroup
 import com.musicsocial.app.ui.components.FormField
 import com.musicsocial.app.ui.components.LoadingButton
+import com.musicsocial.app.ui.components.PickerField
 import com.musicsocial.app.ui.label
 import com.musicsocial.app.ui.message
 import com.musicsocial.domain.model.ArtistRole
@@ -82,11 +83,33 @@ fun ProfileScreen(
                 label = stringResource(R.string.field_username),
                 error = state.errors[Field.USERNAME],
             )
-            FormField(
-                value = state.form.city,
-                onValueChange = viewModel::onCityChange,
+            PickerField(
+                label = stringResource(R.string.field_country),
+                value = state.countryName,
+                options = state.countries,
+                optionLabel = { it.name },
+                onSelect = { viewModel.onCountrySelected(it.code) },
+            )
+            PickerField(
+                label = stringResource(R.string.field_region),
+                value = state.region,
+                options = state.regions,
+                optionLabel = { it },
+                onSelect = viewModel::onRegionSelected,
+                enabled = state.form.country.isNotEmpty(),
+                hint = stringResource(R.string.hint_choose_country_first),
+            )
+            // Si su ciudad no está en la lista, puede escribirla en el buscador y usarla igual.
+            PickerField(
                 label = stringResource(R.string.field_city),
+                value = state.form.city,
+                options = state.cities,
+                optionLabel = { it },
+                onSelect = viewModel::onCityChange,
+                enabled = state.region.isNotEmpty(),
                 error = state.errors[Field.CITY],
+                hint = stringResource(R.string.hint_choose_region_first),
+                allowCustom = viewModel::onCityChange,
             )
             FormField(
                 value = state.form.bio,
