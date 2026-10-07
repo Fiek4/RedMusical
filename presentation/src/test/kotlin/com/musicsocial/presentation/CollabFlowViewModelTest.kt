@@ -122,9 +122,10 @@ class CollabFlowViewModelTest : ViewModelTest() {
         applyAsLuis(callId)
         app.signIn("ana")
 
-        val vm = ReviewApplicationsViewModel(callId, app.applications, app.review)
+        val vm = ReviewApplicationsViewModel(callId, app.applications, app.users, app.review)
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { vm.uiState.collect {} }
         val application = vm.uiState.value.pending.single()
+        assertEquals("Luis", vm.uiState.value.applicants["luis"]?.artistName)
 
         vm.onAccept(application.id)
 
@@ -141,7 +142,7 @@ class CollabFlowViewModelTest : ViewModelTest() {
         val callId = publishAsAna()
         applyAsLuis(callId) // sesión queda como Luis
 
-        val vm = ReviewApplicationsViewModel(callId, app.applications, app.review)
+        val vm = ReviewApplicationsViewModel(callId, app.applications, app.users, app.review)
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { vm.uiState.collect {} }
         vm.onReject(vm.uiState.value.pending.single().id)
 

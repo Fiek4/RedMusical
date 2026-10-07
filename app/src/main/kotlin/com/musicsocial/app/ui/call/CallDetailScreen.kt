@@ -60,6 +60,7 @@ import java.time.format.FormatStyle
 fun CallDetailScreen(
     callId: String,
     onBack: () -> Unit,
+    onReviewApplications: (String) -> Unit,
     viewModel: ApplyViewModel = koinViewModel(key = callId) { parametersOf(callId) },
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -100,7 +101,10 @@ fun CallDetailScreen(
 
         when {
             call == null -> Text(stringResource(R.string.ui_error_not_found), style = MaterialTheme.typography.bodyLarge)
-            state.isOwnCall -> Notice(stringResource(R.string.detail_own_call))
+            state.isOwnCall -> {
+                Notice(stringResource(R.string.detail_own_call))
+                LoadingButton(stringResource(R.string.action_view_applications), isLoading = false) { onReviewApplications(callId) }
+            }
             state.applied || state.alreadyApplied -> Notice(stringResource(R.string.detail_applied))
             else -> {
                 GradientText(stringResource(R.string.detail_apply_title), style = MaterialTheme.typography.titleLarge)

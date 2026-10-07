@@ -30,6 +30,8 @@ android {
 
         buildConfigField("String", "SUPABASE_URL", "\"${localProp("SUPABASE_URL")}\"")
         buildConfigField("String", "SUPABASE_KEY", "\"${localProp("SUPABASE_KEY")}\"")
+        // DEMO_MODE=true en local.properties: datos de ejemplo en memoria, sin Supabase.
+        buildConfigField("boolean", "DEMO_MODE", (localProps.getProperty("DEMO_MODE")?.trim() == "true").toString())
     }
 
     buildFeatures {

@@ -142,7 +142,12 @@ fun FormScreen(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     AppBackground {
-        Scaffold(snackbarHost = { SnackbarHost(snackbar) }, containerColor = Color.Transparent) { padding ->
+        Scaffold(
+            snackbarHost = { SnackbarHost(snackbar) },
+            containerColor = Color.Transparent,
+            // Con fondo transparente el color del texto no se deduce solo: sin esto sale negro.
+            contentColor = MaterialTheme.colorScheme.onBackground,
+        ) { padding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()

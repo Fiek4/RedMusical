@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.musicsocial.app.ui.call.CallDetailScreen
 import com.musicsocial.app.ui.call.CreateCallScreen
+import com.musicsocial.app.ui.call.ReviewApplicationsScreen
 import com.musicsocial.app.ui.feed.FeedScreen
 import com.musicsocial.app.ui.login.LoginScreen
 import com.musicsocial.app.ui.profile.ProfileScreen
@@ -27,6 +28,7 @@ import kotlinx.serialization.Serializable
 @Serializable object FeedRoute
 @Serializable object CreateCallRoute
 @Serializable data class CallDetailRoute(val callId: String)
+@Serializable data class ReviewApplicationsRoute(val callId: String)
 
 @Composable
 fun AppNavHost(navController: NavHostController = rememberNavController()) {
@@ -73,6 +75,14 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         composable<CallDetailRoute> { entry ->
             CallDetailScreen(
                 callId = entry.toRoute<CallDetailRoute>().callId,
+                onBack = { navController.popBackStack() },
+                onReviewApplications = { callId -> navController.navigate(ReviewApplicationsRoute(callId)) },
+            )
+        }
+
+        composable<ReviewApplicationsRoute> { entry ->
+            ReviewApplicationsScreen(
+                callId = entry.toRoute<ReviewApplicationsRoute>().callId,
                 onBack = { navController.popBackStack() },
             )
         }

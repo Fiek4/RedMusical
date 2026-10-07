@@ -2,7 +2,15 @@ package com.musicsocial.app.di
 
 import com.musicsocial.app.AndroidAudioBytesReader
 import com.musicsocial.app.BuildConfig
+import com.musicsocial.app.demo.DemoAudioUploader
+import com.musicsocial.app.demo.DemoData
 import com.musicsocial.data.location.TextLocationCatalog
+import com.musicsocial.data.memory.InMemoryApplicationRepository
+import com.musicsocial.data.memory.InMemoryAuthRepository
+import com.musicsocial.data.memory.InMemoryChatRepository
+import com.musicsocial.data.memory.InMemoryCollabCallRepository
+import com.musicsocial.data.memory.InMemoryTrackRepository
+import com.musicsocial.data.memory.InMemoryUserRepository
 import com.musicsocial.data.memory.UuidIdGenerator
 import com.musicsocial.data.supabase.SupabaseApplicationRepository
 import com.musicsocial.data.supabase.SupabaseAudioUploader
@@ -44,28 +52,49 @@ import org.koin.dsl.module
 import java.time.Clock
 
 /**
- * Aquí se decide qué implementación usa la app. Para probar sin internet,
- * cambia los repositorios Supabase por los InMemory del módulo :data.
+ * Aquí se decide qué implementación usa la app: Supabase, o datos de ejemplo
+ * en memoria si local.properties tiene DEMO_MODE=true (ver [demoModule]).
  */
-val appModule = module {
-    single { createMusicSocialClient(BuildConfig.SUPABASE_URL, BuildConfig.SUPABASE_KEY) }
-    single<Clock> { Clock.systemUTC() }
-    single<IdGenerator> { UuidIdGenerator() }
+val appModules get() = listOf(commonModule, if (BuildConfig.DEMO_MODE) demoModule else supabaseModule)
 
-    // Repositorios
+/** Repositorios reales contra Supabase. */
+private val supabaseModule = module {
+    single { createMusicSocialClient(BuildConfig.SUPABASE_URL, BuildConfig.SUPABASE_KEY) }
     single<AuthRepository> { SupabaseAuthRepository(get()) }
     single<UserRepository> { SupabaseUserRepository(get()) }
     single<TrackRepository> { SupabaseTrackRepository(get()) }
     single<CollabCallRepository> { SupabaseCollabCallRepository(get()) }
     single<ApplicationRepository> { SupabaseApplicationRepository(get()) }
     single<ChatRepository> { SupabaseChatRepository(get()) }
+    single<AudioUploader> { SupabaseAudioUploader(get(), get(), AndroidAudioBytesReader(androidContext())) }
+}
+
+/**
+ * Modo demo: todo vive en memoria y arranca con artistas, convocatorias y
+ * postulantes de ejemplo. Sirve para ver y probar pantallas sin tocar Supabase.
+ * Los datos se pierden al cerrar la app.
+ */
+private val demoModule = module {
+    single { InMemoryAuthRepository(get()) }
+    single<AuthRepository> { get<InMemoryAuthRepository>() }
+    single<UserRepository> { InMemoryUserRepository() }
+    single<TrackRepository> { InMemoryTrackRepository() }
+    single<CollabCallRepository> { InMemoryCollabCallRepository() }
+    single<ApplicationRepository> { InMemoryApplicationRepository() }
+    single<ChatRepository> { InMemoryChatRepository() }
+    single<AudioUploader> { DemoAudioUploader() }
+    single { DemoData(androidContext(), get(), get(), get(), get(), get()) }
+}
+
+private val commonModule = module {
+    single<Clock> { Clock.systemUTC() }
+    single<IdGenerator> { UuidIdGenerator() }
     single<LocationCatalog> {
         val assets = androidContext().assets
         TextLocationCatalog {
             withContext(Dispatchers.IO) { assets.open("locations.txt").bufferedReader().use { it.readText() } }
         }
     }
-    single<AudioUploader> { SupabaseAudioUploader(get(), get(), AndroidAudioBytesReader(androidContext())) }
 
     // Casos de uso
     factory { RegisterUseCase(get()) }
@@ -84,5 +113,5 @@ val appModule = module {
     viewModel { FeedViewModel(get(), get(), get(), get()) }
     viewModel { CreateCallViewModel(get(), get()) }
     viewModel { params -> ApplyViewModel(params.get(), get(), get(), get(), get()) }
-    viewModel { params -> ReviewApplicationsViewModel(params.get(), get(), get()) }
+    viewModel { params -> ReviewApplicationsViewModel(params.get(), get(), get(), get()) }
 }
