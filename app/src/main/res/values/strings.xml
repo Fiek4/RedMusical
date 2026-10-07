@@ -72,7 +72,7 @@
     <string name="detail_bpm">BPM</string>
     <string name="detail_key">Tonalidad</string>
     <string name="detail_budget">%1$s · %2$d a %3$d %4$s</string>
-    <string name="detail_own_call">Esta es tu convocatoria. Aquí verás a los postulantes cuando esté lista esa pantalla.</string>
+    <string name="detail_own_call">Esta es tu convocatoria. Escucha las demos de quienes se postularon.</string>
     <string name="detail_applied">Ya te postulaste a esta convocatoria. Te avisaremos cuando el autor responda.</string>
     <string name="detail_apply_title">Postularme</string>
     <string name="detail_apply_hint">Sube una demo de hasta %1$d segundos sobre el beat o con material tuyo.</string>
@@ -82,6 +82,19 @@
     <string name="player_play">▶ Escuchar audio (%1$d:%2$02d)</string>
     <string name="player_pause">❚❚ Pausar</string>
     <string name="player_error">No se pudo cargar el audio. Toca para reintentar.</string>
+    <string name="action_view_applications">Ver postulantes</string>
+
+    <!-- Revisar postulantes -->
+    <string name="review_title">Postulantes</string>
+    <string name="review_pending_count">%1$d por revisar</string>
+    <string name="review_empty">Todavía nadie se postuló. Te avisaremos cuando llegue la primera demo.</string>
+    <string name="review_accepted">Aceptados</string>
+    <string name="review_accepted_item">✓ %1$s · chat abierto</string>
+    <string name="review_unknown_artist">Artista</string>
+    <string name="review_processing">Guardando…</string>
+    <string name="review_chat_opened">¡Aceptado! Se abrió un chat con este artista.</string>
+    <string name="action_accept">Aceptar</string>
+    <string name="action_reject">Descartar</string>
 
     <!-- Roles -->
     <string name="role_producer">Productor</string>

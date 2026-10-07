@@ -74,6 +74,13 @@ incluido el flujo completo
 
 Más detalles de Supabase en [docs/supabase.md](docs/supabase.md).
 
+### Modo demo (sin Supabase)
+
+Agrega `DEMO_MODE=true` en `local.properties` y vuelve a ejecutar la app. Entra directo como
+"Fer Beats" con artistas, convocatorias y postulantes de ejemplo, todo en memoria (se borra al
+cerrar la app). Las cuentas de ejemplo usan la contraseña `demo1234`. Quítalo o ponlo en `false`
+para volver a Supabase.
+
 ## Datos de ubicación
 
 La lista de países, regiones y ciudades del perfil está en `app/src/main/assets/locations.txt`
