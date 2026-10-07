@@ -45,6 +45,27 @@
     <string name="feed_looking_for">Busca: %1$s</string>
     <string name="feed_deadline">Hasta el %1$s</string>
     <string name="action_sign_out">Salir</string>
+    <string name="action_create_call">+ Crear convocatoria</string>
+
+    <!-- Crear convocatoria -->
+    <string name="call_title">Nueva convocatoria</string>
+    <string name="field_call_title">Título (ej: Busco rapero para beat de drill)</string>
+    <string name="call_looking_for">¿A quién buscas?</string>
+    <string name="call_genre">Género</string>
+    <string name="field_call_description">Descripción: qué buscas, referencias, estilo</string>
+    <string name="field_bpm">BPM (opcional)</string>
+    <string name="field_musical_key">Tonalidad (ej: Am)</string>
+    <string name="call_audio">Audio de referencia</string>
+    <string name="call_audio_pick">Elegir audio (máx. %1$d min)</string>
+    <string name="call_audio_selected">%1$s · %2$d:%3$02d</string>
+    <string name="call_audio_unsupported">Usa un audio MP3, WAV, AAC, M4A u OGG.</string>
+    <string name="call_deadline">Fecha límite</string>
+    <string name="call_deadline_pick">Elegir fecha</string>
+    <string name="call_deal_type">Tipo de acuerdo</string>
+    <string name="field_budget_min">Mínimo (%1$s)</string>
+    <string name="field_budget_max">Máximo (%1$s)</string>
+    <string name="action_publish_call">Publicar convocatoria</string>
+    <string name="action_ok">Aceptar</string>
 
     <!-- Roles -->
     <string name="role_producer">Productor</string>
