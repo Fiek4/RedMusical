@@ -15,6 +15,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -40,7 +41,7 @@ class CollabFlowViewModelTest : ViewModelTest() {
 
     private suspend fun applyAsLuis(callId: String): ApplyViewModel {
         app.signIn("luis", roles = setOf(ArtistRole.RAPPER))
-        val vm = ApplyViewModel(callId, app.calls, app.applyToCall)
+        val vm = ApplyViewModel(callId, app.auth, app.calls, app.applications, app.applyToCall)
         vm.onDemoSelected(audio(45))
         vm.onMessageChange("Me encanta el beat")
         vm.onSend()
@@ -92,10 +93,27 @@ class CollabFlowViewModelTest : ViewModelTest() {
     @Test
     fun `no puedo postularme a mi propia convocatoria`() = runTest {
         val callId = publishAsAna()
-        val vm = ApplyViewModel(callId, app.calls, app.applyToCall)
+        val vm = ApplyViewModel(callId, app.auth, app.calls, app.applications, app.applyToCall)
         vm.onDemoSelected(audio(45))
         vm.onSend()
         assertEquals(ValidationError.CannotApplyToOwnCall, vm.uiState.value.errors[Field.GENERAL])
+    }
+
+    @Test
+    fun `el detalle oculta el formulario en mi propia convocatoria`() = runTest {
+        val callId = publishAsAna()
+        val vm = ApplyViewModel(callId, app.auth, app.calls, app.applications, app.applyToCall)
+        assertTrue(vm.uiState.value.isOwnCall)
+        assertFalse(vm.uiState.value.canApply)
+    }
+
+    @Test
+    fun `el detalle recuerda que ya me postule`() = runTest {
+        val callId = publishAsAna()
+        applyAsLuis(callId)
+        val vm = ApplyViewModel(callId, app.auth, app.calls, app.applications, app.applyToCall)
+        assertTrue(vm.uiState.value.alreadyApplied)
+        assertFalse(vm.uiState.value.canApply)
     }
 
     @Test

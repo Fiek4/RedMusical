@@ -67,6 +67,22 @@
     <string name="action_publish_call">Publicar convocatoria</string>
     <string name="action_ok">Aceptar</string>
 
+    <!-- Detalle de convocatoria y postulación -->
+    <string name="action_back">← Volver</string>
+    <string name="detail_bpm">BPM</string>
+    <string name="detail_key">Tonalidad</string>
+    <string name="detail_budget">%1$s · %2$d a %3$d %4$s</string>
+    <string name="detail_own_call">Esta es tu convocatoria. Aquí verás a los postulantes cuando esté lista esa pantalla.</string>
+    <string name="detail_applied">Ya te postulaste a esta convocatoria. Te avisaremos cuando el autor responda.</string>
+    <string name="detail_apply_title">Postularme</string>
+    <string name="detail_apply_hint">Sube una demo de hasta %1$d segundos sobre el beat o con material tuyo.</string>
+    <string name="detail_pick_demo">Elegir demo</string>
+    <string name="field_apply_message">Mensaje para el autor (opcional, máx. %1$d)</string>
+    <string name="action_send_application">Enviar postulación</string>
+    <string name="player_play">▶ Escuchar audio (%1$d:%2$02d)</string>
+    <string name="player_pause">❚❚ Pausar</string>
+    <string name="player_error">No se pudo cargar el audio. Toca para reintentar.</string>
+
     <!-- Roles -->
     <string name="role_producer">Productor</string>
     <string name="role_singer">Cantante</string>

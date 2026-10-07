@@ -55,6 +55,7 @@ import java.time.format.FormatStyle
 fun FeedScreen(
     onSignedOut: () -> Unit,
     onCreateCall: () -> Unit,
+    onOpenCall: (String) -> Unit,
     viewModel: FeedViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -110,7 +111,7 @@ fun FeedScreen(
                             TextButton(onClick = viewModel::onClearFilters) { Text(stringResource(R.string.feed_clear_filters)) }
                         }
                     }
-                    else -> items(state.calls, key = { it.id }) { call -> CallCard(call) }
+                    else -> items(state.calls, key = { it.id }) { call -> CallCard(call, onClick = { onOpenCall(call.id) }) }
                 }
             }
         }
@@ -120,8 +121,9 @@ fun FeedScreen(
 private val deadlineFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
 
 @Composable
-private fun CallCard(call: CollabCall) {
+private fun CallCard(call: CollabCall, onClick: () -> Unit) {
     Card(
+        onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),

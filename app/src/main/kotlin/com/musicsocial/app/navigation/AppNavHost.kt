@@ -5,6 +5,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.musicsocial.app.ui.call.CallDetailScreen
 import com.musicsocial.app.ui.call.CreateCallScreen
 import com.musicsocial.app.ui.feed.FeedScreen
 import com.musicsocial.app.ui.login.LoginScreen
@@ -24,6 +26,7 @@ import kotlinx.serialization.Serializable
 @Serializable object OnboardingRoute
 @Serializable object FeedRoute
 @Serializable object CreateCallRoute
+@Serializable data class CallDetailRoute(val callId: String)
 
 @Composable
 fun AppNavHost(navController: NavHostController = rememberNavController()) {
@@ -63,6 +66,14 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
             FeedScreen(
                 onSignedOut = { navController.clearStackAndGo(LoginRoute) },
                 onCreateCall = { navController.navigate(CreateCallRoute) },
+                onOpenCall = { callId -> navController.navigate(CallDetailRoute(callId)) },
+            )
+        }
+
+        composable<CallDetailRoute> { entry ->
+            CallDetailScreen(
+                callId = entry.toRoute<CallDetailRoute>().callId,
+                onBack = { navController.popBackStack() },
             )
         }
 
