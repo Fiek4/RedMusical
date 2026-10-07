@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.musicsocial.domain.form.ApplicationForm
 import com.musicsocial.domain.model.AudioFile
 import com.musicsocial.domain.model.CollabCall
+import com.musicsocial.domain.repository.ApplicationRepository
+import com.musicsocial.domain.repository.AuthRepository
 import com.musicsocial.domain.repository.CollabCallRepository
 import com.musicsocial.domain.usecase.ApplyToCallUseCase
 import com.musicsocial.domain.usecase.UseCaseResult
@@ -27,12 +29,21 @@ data class ApplyUiState(
     val isSending: Boolean = false,
     val error: UiError? = null,
     val applied: Boolean = false,
-)
+    /** La convocatoria es del usuario: en vez del formulario se ve un aviso. */
+    val isOwnCall: Boolean = false,
+    /** Ya se había postulado antes de abrir la pantalla. */
+    val alreadyApplied: Boolean = false,
+) {
+    /** El formulario solo se muestra si de verdad puede postularse. */
+    val canApply: Boolean get() = call != null && !isOwnCall && !alreadyApplied && !applied
+}
 
 /** Detalle de una convocatoria + formulario para postularse. */
 class ApplyViewModel(
     private val callId: String,
+    private val auth: AuthRepository,
     private val calls: CollabCallRepository,
+    private val applications: ApplicationRepository,
     private val applyToCall: ApplyToCallUseCase,
 ) : ViewModel() {
 
@@ -43,9 +54,28 @@ class ApplyViewModel(
 
     init {
         viewModelScope.launch {
-            val call = calls.getCall(callId)
-            _uiState.update {
-                it.copy(call = call, isLoading = false, error = if (call == null) UiError.NOT_FOUND else null)
+            val result = runCatching {
+                val call = calls.getCall(callId)
+                val userId = auth.currentUserId()
+                Triple(
+                    call,
+                    call != null && call.authorId == userId,
+                    call != null && userId != null && applications.hasApplied(callId, userId),
+                )
+            }
+            _uiState.update { state ->
+                result.fold(
+                    onSuccess = { (call, own, applied) ->
+                        state.copy(
+                            call = call,
+                            isOwnCall = own,
+                            alreadyApplied = applied,
+                            isLoading = false,
+                            error = if (call == null) UiError.NOT_FOUND else null,
+                        )
+                    },
+                    onFailure = { e -> state.copy(isLoading = false, error = e.toUiError()) },
+                )
             }
         }
     }

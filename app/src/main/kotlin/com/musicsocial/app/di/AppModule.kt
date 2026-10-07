@@ -83,6 +83,6 @@ val appModule = module {
     viewModel { EditProfileViewModel(get(), get(), get(), get()) }
     viewModel { FeedViewModel(get(), get(), get(), get()) }
     viewModel { CreateCallViewModel(get(), get()) }
-    viewModel { params -> ApplyViewModel(params.get(), get(), get()) }
+    viewModel { params -> ApplyViewModel(params.get(), get(), get(), get(), get()) }
     viewModel { params -> ReviewApplicationsViewModel(params.get(), get(), get()) }
 }
