@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.musicsocial.app.ui.call.CreateCallScreen
 import com.musicsocial.app.ui.feed.FeedScreen
 import com.musicsocial.app.ui.login.LoginScreen
 import com.musicsocial.app.ui.profile.ProfileScreen
@@ -22,6 +23,7 @@ import kotlinx.serialization.Serializable
 @Serializable object RegisterRoute
 @Serializable object OnboardingRoute
 @Serializable object FeedRoute
+@Serializable object CreateCallRoute
 
 @Composable
 fun AppNavHost(navController: NavHostController = rememberNavController()) {
@@ -58,7 +60,18 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         }
 
         composable<FeedRoute> {
-            FeedScreen(onSignedOut = { navController.clearStackAndGo(LoginRoute) })
+            FeedScreen(
+                onSignedOut = { navController.clearStackAndGo(LoginRoute) },
+                onCreateCall = { navController.navigate(CreateCallRoute) },
+            )
+        }
+
+        composable<CreateCallRoute> {
+            // Al publicar volvemos al feed, que se recarga solo con la convocatoria nueva.
+            CreateCallScreen(
+                onPublished = { navController.popBackStack() },
+                onCancel = { navController.popBackStack() },
+            )
         }
     }
 }
